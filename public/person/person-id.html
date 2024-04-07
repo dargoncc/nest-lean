@@ -4,9 +4,10 @@
     <script src="https://unpkg.com/axios@0.24.0/dist/axios.min.js"></script>
 </head>
 <body>
+    <div>person-id</div>
     <script>
         async function urlParam() {
-            const res = await axios.get('/person/1');
+            const res = await axios.get('/api/person/1');
             console.log(res);
         }
         urlParam();

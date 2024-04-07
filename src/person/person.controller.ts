@@ -7,10 +7,13 @@ import {
   Param,
   Delete,
   Query,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('person')
 export class PersonController {
@@ -44,12 +47,31 @@ export class PersonController {
 
 @Controller('api/person')
 export class PersonController1 {
+  // form-data
+  @Post('file')
+  @UseInterceptors(
+    AnyFilesInterceptor({
+      dest: 'uploads/',
+    }),
+  )
+  body2(
+    @Body() createPersonDto: CreatePersonDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    console.log(files);
+    return `received: ${JSON.stringify(createPersonDto)}`;
+  }
   @Get('find')
   query(@Query('name') name: string, @Query('age') age: number) {
-    return `This is the person with received name: ${name}, age: ${age}`;
+    return `received name: ${name}, age: ${age}`;
   }
   @Get(':id')
   urlParam(@Param('id') id: string) {
-    return `This is the person with received id: ${id}`;
+    return `received: id= ${id}`;
+  }
+  // form urlencoded - json
+  @Post()
+  body(@Body() createPersonDto: CreatePersonDto) {
+    return `received: ${JSON.stringify(createPersonDto)}`;
   }
 }
